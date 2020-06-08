@@ -33,11 +33,10 @@ jobs:
         REPO_URL: https://github.com/maxmind/MaxMind-DB-Writer-perl
       run: git clone $REPO_URL writer
 
-    - name: Clone 17mon-mmdb
+    - name: Clone this project
       env: 
-        REPO_URL: https://github.com/Max-Sum/17mon-mmdb
         REPO_BRANCH: master
-      run: git clone -b $REPO_BRANCH $REPO_URL
+      run: git clone -b $REPO_BRANCH https://github.com/${{ github.repository }} work
 
     - name: Install perl deps
       continue-on-error: true
@@ -56,7 +55,7 @@ jobs:
 
     - name: Download GeoLite2-Country-CSV
       run: |
-          cd 17mon-mmdb
+          cd work
           curl -L -o GeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=JvbzLLx7qBZT&suffix=zip"
           unzip GeoLite2-Country-CSV.zip
           rm -f GeoLite2-Country-CSV.zip
@@ -64,26 +63,26 @@ jobs:
 
     - name: Download 17mon country.txt
       run: |
-          cd 17mon-mmdb
+          cd work
           curl -L -o 17mon.zip "https://cdn.ipip.net/17mon/country.zip"
           unzip 17mon.zip
           rm 17mon.zip LICENSE.TXT
 
     - name: Build mmdb
       run: |
-          cd 17mon-mmdb
+          cd work
           perl generate.pl
 
     - name: Generate version file
       run: |
-          cd 17mon-mmdb
+          cd work
           echo $TAG_NAME > version
 
     - name: Push to release branch
       run: |
         mkdir publish
-        cp -af 17mon-mmdb/version publish/version
-        cp -af 17mon-mmdb/Country.mmdb publish/Country.mmdb
+        cp -af work/version publish/version
+        cp -af work/Country.mmdb publish/Country.mmdb
         cd publish
         git init
         git config --local user.name "${{ github.actor }}"
@@ -96,14 +95,15 @@ jobs:
 
     - name: Release and upload
       uses: softprops/action-gh-release@v1
+      continue-on-error: true
       with:
         name: ${{ env.RELEASE_NAME }}
         tag_name: ${{ env.TAG_NAME }}
         draft: false
         prerelease: false
         files: |
-          ./17mon-mmdb/version
-          ./17mon-mmdb/Country.mmdb
+          ./work/version
+          ./work/Country.mmdb
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
