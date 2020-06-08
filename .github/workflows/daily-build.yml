@@ -16,9 +16,9 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install perl
+          sudo rm -rf /etc/apt/sources.list.d
+          sudo -E apt-get update
+          sudo -E apt-get -y install perl
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           perl --version
 
@@ -33,9 +33,9 @@ jobs:
         REPO_URL: https://github.com/maxmind/MaxMind-DB-Writer-perl
       run: git clone $REPO_URL writer
 
-    - name: Clone mmdb_china_ip_list
+    - name: Clone 17mon-mmdb
       env: 
-        REPO_URL: https://github.com/Max-Sum/mmdb_china_ip_list
+        REPO_URL: https://github.com/Max-Sum/17mon-mmdb
         REPO_BRANCH: master
       run: git clone -b $REPO_BRANCH $REPO_URL
 
@@ -44,8 +44,8 @@ jobs:
       run: |
           cd writer
           curl -LO http://xrl.us/cpanm
-          sudo -E perl cpanm --installdeps -n .
           sudo -E perl cpanm -n Path::Class
+          sudo -E perl cpanm -n .
           
     - name: Build MaxMind-DB-Writer-perl
       run: |
@@ -56,7 +56,7 @@ jobs:
 
     - name: Download GeoLite2-Country-CSV
       run: |
-          cd mmdb_china_ip_list
+          cd 17mon-mmdb
           curl -L -o GeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=JvbzLLx7qBZT&suffix=zip"
           unzip GeoLite2-Country-CSV.zip
           rm -f GeoLite2-Country-CSV.zip
@@ -64,26 +64,26 @@ jobs:
 
     - name: Download 17mon country.txt
       run: |
-          cd mmdb_china_ip_list
+          cd 17mon-mmdb
           curl -L -o 17mon.zip "https://cdn.ipip.net/17mon/country.zip"
           unzip 17mon.zip
           rm 17mon.zip LICENSE.TXT
 
     - name: Build mmdb
       run: |
-          cd mmdb_china_ip_list
-          perl china_ip_list.pl
+          cd 17mon-mmdb
+          perl generate.pl
 
     - name: Generate version file
       run: |
-          cd mmdb_china_ip_list
+          cd 17mon-mmdb
           echo $TAG_NAME > version
 
     - name: Push to release branch
       run: |
         mkdir publish
-        cp -af mmdb_china_ip_list/version publish/version
-        cp -af mmdb_china_ip_list/Country.mmdb publish/Country.mmdb
+        cp -af 17mon-mmdb/version publish/version
+        cp -af 17mon-mmdb/Country.mmdb publish/Country.mmdb
         cd publish
         git init
         git config --local user.name "${{ github.actor }}"
@@ -102,8 +102,8 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./mmdb_china_ip_list/version
-          ./mmdb_china_ip_list/Country.mmdb
+          ./17mon-mmdb/version
+          ./17mon-mmdb/Country.mmdb
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

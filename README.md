@@ -1,6 +1,6 @@
 # 17mon MMDB
 
-![Daily Build](https://github.com/Max-Sum/mmdb_china_ip_list/workflows/Daily%20Build/badge.svg)
+![Daily Build](https://github.com/Max-Sum/17mon-mmdb/workflows/Daily%20Build/badge.svg)
 
 GeoIP MMDB from 17mon
 
@@ -11,8 +11,8 @@ GeoIP MMDB from 17mon
 
 ## 固定下载连接
 
-[Country.mmdb](https://raw.githubusercontent.com/Max-Sum/mmdb_china_ip_list/release/Country.mmdb)
-[version](https://raw.githubusercontent.com/alecthw/mmdb_china_ip_list/release/version)
+[Country.mmdb](https://raw.githubusercontent.com/Max-Sum/17mon-mmdb/release/Country.mmdb)
+[version](https://raw.githubusercontent.com/alecthw/17mon-mmdb/release/version)
 
 ## 简介
 
@@ -22,7 +22,7 @@ GeoIP MMDB from 17mon
 
 ## 使用
 
-从[Release](https://github.com/Max-Sum/mmdb_china_ip_list/releases)下载生成的`Country.mmdb`。
+从[Release](https://github.com/Max-Sum/17mon-mmdb/releases)下载生成的`Country.mmdb`。
 
 使用方式同MaxMind官方API，可参考[指导文档](http://maxmind.github.io/MaxMind-DB/)。
 
@@ -41,7 +41,7 @@ cd writer
 
 # 安装依赖
 curl -LO http://xrl.us/cpanm
-perl cpanm --installdeps -n .
+perl cpanm -n .
 perl cpanm -n Path::Class
 
 # 构建
@@ -53,8 +53,8 @@ perl Build.PL
 cd ..
 
 # 下载本项目
-git clone https://github.com/Max-Sum/mmdb_china_ip_list.git
-cd mmdb_china_ip_list
+git clone https://github.com/Max-Sum/17mon-mmdb.git
+cd 17mon-mmdb
 
 # 下载GeoLite2-Country-CSV
 curl -L -o GeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=JvbzLLx7qBZT&suffix=zip"
