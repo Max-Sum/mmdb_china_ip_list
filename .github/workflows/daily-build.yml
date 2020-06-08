@@ -17,12 +17,9 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
           sudo -E apt-get -qq update
           sudo -E apt-get -qq install perl
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          sudo -E apt-get -y autoremove --purge
-          sudo -E apt-get clean
           perl --version
 
     - name: Set env variables
@@ -86,7 +83,7 @@ jobs:
       run: |
         mkdir publish
         cp -af mmdb_china_ip_list/version publish/version
-        cp -af mmdb_china_ip_list/china_ip_list.mmdb publish/Country.mmdb
+        cp -af mmdb_china_ip_list/Country.mmdb publish/Country.mmdb
         cd publish
         git init
         git config --local user.name "${{ github.actor }}"
@@ -106,7 +103,7 @@ jobs:
         prerelease: false
         files: |
           ./mmdb_china_ip_list/version
-          ./mmdb_china_ip_list/china_ip_list.mmdb
+          ./mmdb_china_ip_list/Country.mmdb
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -1,36 +1,34 @@
-# mmdb_china_ip_list
+# 17mon MMDB
 
-![Daily Build](https://github.com/alecthw/mmdb_china_ip_list/workflows/Daily%20Build/badge.svg)  ![Release Build](https://github.com/alecthw/mmdb_china_ip_list/workflows/Release%20Build/badge.svg)
+![Daily Build](https://github.com/Max-Sum/mmdb_china_ip_list/workflows/Daily%20Build/badge.svg)
 
-GeoIP MaxMind Database with china ip list.
+GeoIP MMDB from 17mon
 
 适合在网络分流工具中使用，对中国IP的匹配分流更为友好，兼容MaxMind DB的客户端！
 
-每周自动拉取新的MaxMind、china_ip_list和纯真CN数据库，并发布一个新的Release版本。
+每周自动拉取新的17mon数据库，并发布一个新的Release版本。
 
 
 ## 固定下载连接
 
-| 文件 | release分支 | 阿里云 |
-| ------ | ------ | ------ |
-| Country.mmdb | [链接](https://raw.githubusercontent.com/alecthw/mmdb_china_ip_list/release/Country.mmdb) | [链接](http://www.ideame.top/mmdb/Country.mmdb) |
-| version | [链接](https://raw.githubusercontent.com/alecthw/mmdb_china_ip_list/release/version) | [链接](http://www.ideame.top/mmdb/version) |
+[Country.mmdb](https://raw.githubusercontent.com/Max-Sum/mmdb_china_ip_list/release/Country.mmdb)
+[version](https://raw.githubusercontent.com/alecthw/mmdb_china_ip_list/release/version)
 
 ## 简介
 
 在网络分流工具(例如Clash)中使用[MaxMind](https://www.maxmind.com/en/home)的`GeoLite2-Country`对中国IP的匹配不是很友好，实际使用中出现不少问题。
 
-此项目，在MaxMind数据库的基础上，加入了[china_ip_list](https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt)和[纯真CN数据库](https://raw.githubusercontent.com/metowolf/iplist/master/data/country/CN.txt)，使得对中国IP匹配得更为友好。
+此项目，使用17mon提供的[数据库](https://cdn.ipip.net/17mon/country.zip)，结合Maxmind的IPv6库，使得对中国IP匹配得更为友好。
 
 ## 使用
 
-从[Release](https://github.com/alecthw/mmdb_china_ip_list/releases)下载生成的`china_ip_list.mmdb`。
+从[Release](https://github.com/Max-Sum/mmdb_china_ip_list/releases)下载生成的`Country.mmdb`。
 
 使用方式同MaxMind官方API，可参考[指导文档](http://maxmind.github.io/MaxMind-DB/)。
 
 ### OpenClash中使用
 
-将`china_ip_list.mmdb`重命名为`Country.mmdb`，然后替换掉`/etc/openclash/Country.mmdb`，最后重启下clash即可。
+替换掉`/etc/openclash/Country.mmdb`，最后重启下clash即可。
 
 ## 构建
 
@@ -43,7 +41,8 @@ cd writer
 
 # 安装依赖
 curl -LO http://xrl.us/cpanm
-perl cpanm –installdeps .
+perl cpanm --installdeps -n .
+perl cpanm -n Path::Class
 
 # 构建
 ./Build manifest
@@ -54,7 +53,7 @@ perl Build.PL
 cd ..
 
 # 下载本项目
-git clone https://github.com/alecthw/mmdb_china_ip_list.git
+git clone https://github.com/Max-Sum/mmdb_china_ip_list.git
 cd mmdb_china_ip_list
 
 # 下载GeoLite2-Country-CSV
@@ -63,16 +62,14 @@ unzip GeoLite2-Country-CSV.zip
 rm -f GeoLite2-Country-CSV.zip
 mv GeoLite2* mindmax
 
-# 下载china_ip_list
-curl -L -o china_ip_list.txt "https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt"
-
-# 下载纯真数据库的CN
-curl -L -o CN.txt "https://raw.githubusercontent.com/metowolf/iplist/master/data/country/CN.txt"
+# 下载17mon
+curl -L -o 17mon.zip "https://cdn.ipip.net/17mon/country.zip"
+unzip 17mon.zip
 
 #构建
 perl china_ip_list.pl
 ```
-生成的文件为`china_ip_list.mmdb`。
+生成的文件为`Country.mmdb`。
 
 ## MaxMind GeoIP 格式
 

@@ -343,5 +343,5 @@ insert_17mon_ip('country.txt');
 insert_maxmind_ip('GeoLite2-Country-Blocks-IPv6.csv');
 #insert_china_ip('CN.txt');
 
-open my $fh, '>:raw', 'china_ip_list.mmdb';
+open my $fh, '>:raw', 'Country.mmdb';
 $tree->write_tree($fh);
