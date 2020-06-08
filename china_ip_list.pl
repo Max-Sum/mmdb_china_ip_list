@@ -126,6 +126,7 @@ my %mm_continent_map = (
 
 my %mm_country_map = ();
 my %mm_country2continent_map = ();
+my %mm_iso2country_map = ();
 
 sub mm_country_map_insert{
     my @values = split(',', $_[0]);
@@ -152,6 +153,8 @@ sub mm_country_map_insert{
         $mm_country_map{$geoname_id}{'geoname_id'} = $geoname_id;
 
         $mm_country2continent_map{$geoname_id} = $continent_code;
+        
+        $mm_iso2country_map{$country_iso_code} = $geoname_id;
     }
     if ( $is_in_european_union > 0 ) {
         $mm_country_map{$geoname_id}{'is_in_european_union'} = 1;
@@ -280,6 +283,41 @@ sub insert_maxmind_ip{
     }
 }
 
+sub insert_17mon_ip{
+    my $dir = dir(".");
+    my $file = $dir->file($_[0]);
+    my $content = $file->slurp();
+    my $file_handle = $file->openr();
+    binmode($file_handle, ":utf8");
+    while( my $line = $file_handle->getline() ) {
+        $line =~ s/\s+$//;
+        my @values = split('	', $line);
+
+        my $network = $values[0];
+        my $iso_code = $values[1];
+        my $geoname_id = 0;
+        
+
+        my $data = {};
+
+        if ( exists($mm_iso2country_map{$iso_code} ) ) {
+            $geoname_id = $mm_iso2country_map{$iso_code};
+
+            if ( exists($mm_country_map{$geoname_id} ) ) {
+                $data -> {continent} = $mm_continent_map{$mm_country2continent_map{$geoname_id}};
+                $data -> {country} = $mm_country_map{$geoname_id};
+            }
+            #print "$network $iso_code\n";
+            #print Dumper($data);
+            
+            $tree->insert_network(
+                $network,
+                $data,
+            );
+        }
+    }
+}
+
 sub insert_china_ip{
     my $dir = dir(".");
     my $file = $dir->file($_[0]);
@@ -287,6 +325,7 @@ sub insert_china_ip{
     my $file_handle = $file->openr();
     binmode($file_handle, ":utf8");
     while( my $line = $file_handle->getline() ) {
+        $line =~ s/\s+$//;
         my $data = {};
         $data -> {continent} = $mm_continent_map{'AS'};
         $data -> {country} = $mm_country_map{1814991};
@@ -299,10 +338,10 @@ sub insert_china_ip{
     }
 }
 
-insert_maxmind_ip('GeoLite2-Country-Blocks-IPv4.csv');
+insert_17mon_ip('country.txt');
+#insert_maxmind_ip('GeoLite2-Country-Blocks-IPv4.csv');
 insert_maxmind_ip('GeoLite2-Country-Blocks-IPv6.csv');
-insert_china_ip('china_ip_list.txt');
-insert_china_ip('CN.txt');
+#insert_china_ip('CN.txt');
 
 open my $fh, '>:raw', 'china_ip_list.mmdb';
 $tree->write_tree($fh);
