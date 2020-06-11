@@ -1,8 +1,8 @@
-name: Daily Build
+name: Weekly Build
 
 on:
   schedule:
-    - cron: 2 20 * * *
+    - cron: 16 20 * * 4
   push:
     branches:
       - master
