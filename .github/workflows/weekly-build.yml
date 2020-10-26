@@ -54,9 +54,11 @@ jobs:
           sudo -E ./Build install
 
     - name: Download GeoLite2-Country-CSV
+      env:
+        license: ${{ secrets.MAXMIND_LICENSE_KEY }}
       run: |
           cd work
-          curl -L -o GeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=JvbzLLx7qBZT&suffix=zip"
+          curl -L -o GeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=$license&suffix=zip"
           unzip GeoLite2-Country-CSV.zip
           rm -f GeoLite2-Country-CSV.zip
           mv GeoLite2* mindmax
