@@ -1,4 +1,4 @@
-ame: 'Avoid workflow being suspended'
+name: 'Avoid workflow being suspended'
 
 on:
   workflow_dispatch:
