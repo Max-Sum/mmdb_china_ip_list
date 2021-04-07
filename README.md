@@ -1,6 +1,6 @@
 # 17mon MMDB
 
-![Daily Build](https://github.com/Max-Sum/17mon-mmdb/workflows/Daily%20Build/badge.svg)
+[![Weekly Build](https://github.com/Max-Sum/17mon-mmdb/actions/workflows/weekly-build.yml/badge.svg)](https://github.com/Max-Sum/17mon-mmdb/actions/workflows/weekly-build.yml)
 
 GeoIP MMDB from 17mon
 
